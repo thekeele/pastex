@@ -19,7 +19,7 @@ defmodule PastexWeb.Schema do
     field :name, non_null(:string) do
       # default resolver used when one isn't supplied
       resolve fn paste, _, _ ->
-        {:ok, Map.get(paste, :name)}
+        {:ok, Map.get(paste, :name) || "Untitled"}
       end
     end
 
