@@ -7,6 +7,15 @@ defmodule PastexWeb.Schema.ContentTypes do
   object :paste do
     field :id, non_null(:id)
 
+    field :author, :user do
+      resolve fn
+        %{author_id: nil}, _, _ -> {:ok, nil}
+
+        paste, _, _resolution ->
+          {:ok, Pastex.Identity.get_user(paste.author_id)}
+      end
+    end
+
     field :name, non_null(:string) do
       # default resolver used when one isn't supplied
       resolve fn paste, _, _ ->

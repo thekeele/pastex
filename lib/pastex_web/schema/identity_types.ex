@@ -41,7 +41,7 @@ defmodule PastexWeb.Schema.IdentityTypes do
   end
 
   object :user do
-    field :name, :string
-    field :email, :string
+    field :name, :string, meta: [auth: :use_nil]
+    field :email, non_null(:string), meta: [check_auth: true]
   end
 end
