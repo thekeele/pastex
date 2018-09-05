@@ -2,7 +2,7 @@ defmodule PastexWeb.Schema.ContentTypes do
   use Absinthe.Schema.Notation
   use Absinthe.Relay.Schema.Notation, :modern
 
-  import Absinthe.Resolution.Helpers, only: [async: 1]
+  import Absinthe.Resolution.Helpers
 
   alias PastexWeb.ContentResolver
 
@@ -10,10 +10,10 @@ defmodule PastexWeb.Schema.ContentTypes do
     {:ok, nil}
   end
 
-  def get_author(%{author_id: id}, _, _) do
-    async(fn ->
-      {:ok, Pastex.Identity.get_user(id)}
-    end) |> IO.inspect(label: "async")
+  def get_author(%{author_id: user_id}, _args, _) do
+    batch({Pastex.Identity, :get_users}, user_id, fn results ->
+      {:ok, Map.get(results, user_id)}
+    end)
   end
 
   @desc "Blobs of Pasted code"
