@@ -14,4 +14,16 @@ defmodule PastexWeb.Schema do
   mutation do
     import_fields :content_mutations
   end
+
+  subscription do
+    field :paste_created, :paste do
+      config fn _, _ ->
+        {:ok, topic: "*"}
+      end
+
+      trigger [:create_paste], topic: fn _paste ->
+        "*"
+      end
+    end
+  end
 end
