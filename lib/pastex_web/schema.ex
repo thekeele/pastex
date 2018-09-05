@@ -1,7 +1,7 @@
 defmodule PastexWeb.Schema do
   use Absinthe.Schema
 
-  import_types __MODULE__.ContentTypes
+  import_types PastexWeb.Schema.{ContentTypes, IdentityTypes}
 
   query do
     field :health, :string do
@@ -13,6 +13,7 @@ defmodule PastexWeb.Schema do
 
   mutation do
     import_fields :content_mutations
+    import_fields :identity_mutations
   end
 
   subscription do
