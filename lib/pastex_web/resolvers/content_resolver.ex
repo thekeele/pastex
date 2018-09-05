@@ -24,8 +24,10 @@ defmodule PastexWeb.ContentResolver do
     {:ok, files}
   end
 
-  def list_pastes(_root_value, _, %{context: context}) do
-    {:ok, Content.list_pastes(context[:current_user])}
+  def list_pastes(_root_value, args, %{context: context}) do
+    context[:current_user]
+    |> Content.query_pastes()
+    |> Absinthe.Relay.Connection.from_query(&Pastex.Repo.all/1, args)
   end
 
   ## Mutations

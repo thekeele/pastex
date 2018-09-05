@@ -1,5 +1,6 @@
 defmodule PastexWeb.Schema do
   use Absinthe.Schema
+  use Absinthe.Relay.Schema, :modern
 
   import_types PastexWeb.Schema.{ContentTypes, IdentityTypes}
 
@@ -17,6 +18,7 @@ defmodule PastexWeb.Schema do
     import_fields :identity_mutations
   end
 
+  # missing subscription visibility
   subscription do
     field :paste_created, :paste do
       config fn _, _ ->
@@ -29,22 +31,26 @@ defmodule PastexWeb.Schema do
     end
   end
 
-  def middleware(middleware, field, object) do
-    # middleware is called before each resolution
-    # IO.puts "------------"
-    # IO.inspect(object.identifier, label: :object)
-    # IO.inspect(field.identifier, label: :field)
-    # IO.puts "------------"
-    if Absinthe.Type.meta(object, :check_auth) do
-      [PastexWeb.Middleware.Auth |  middleware]
-    else
-      middleware
-    end
+  # def middleware(middleware, _field, object) do
+  #   # middleware is called before each resolution
+  #   # IO.puts "------------"
+  #   # IO.inspect(object.identifier, label: :object)
+  #   # IO.inspect(field.identifier, label: :field)
+  #   # IO.puts "------------"
+  #   if Absinthe.Type.meta(object, :check_auth) do
+  #     [PastexWeb.Middleware.Auth |  middleware]
+  #   else
+  #     middleware
+  #   end
+  # end
+
+  def middleware(middleware, _field, _) do
+    tracing_middleware() ++ [PastexWeb.Middleware.Auth |  middleware]
   end
 
-  # def middleware(middleware, _field, %{identifier: :user}) do
-  #   [PastexWeb.Middleware.Auth |  middleware]
-  # end
+  defp tracing_middleware() do
+    [ApolloTracing.Middleware.Tracing]
+  end
 
   # def middleware(middleware, _field, _object) do
   #   middleware
