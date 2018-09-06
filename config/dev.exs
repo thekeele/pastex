@@ -41,8 +41,8 @@ config :phoenix, :stacktrace_depth, 20
 # as it doesn't work with releases. We're being lazy here.
 config :pastex, Pastex.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("POSTGRES_USER") || "postgres",
-  password: System.get_env("POSTGRES_PASSWORD") || "postgres",
+  # username: System.get_env("POSTGRES_USER") || "postgres",
+  # password: System.get_env("POSTGRES_PASSWORD") || "postgres",
   database: "pastex_dev",
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool_size: 10
