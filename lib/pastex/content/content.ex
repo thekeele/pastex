@@ -8,6 +8,20 @@ defmodule Pastex.Content do
 
   alias Pastex.Content.Paste
 
+  def data(ctx) do
+    Dataloader.Ecto.new(Repo, query: &query/2, default_params: %{current_user: ctx[:current_user]})
+  end
+
+  # match on queryable to apply filter to all match
+  # def query(Pastex.Content.Pastes, _params) do
+    # params[:current_user]
+    # Pastex.Content.Pastes |> where([p], is_nil(paste.deleted_at))
+  # end
+
+  def query(queryable, _) do
+    queryable
+  end
+
   @doc """
   Returns the list of pastes.
 

@@ -2,7 +2,9 @@ defmodule PastexWeb.ContentResolver do
   # PastexWeb.Resolvers.Content
   # another style, matches folder structure but has little meaning
 
-  alias Pastex.{Content, Repo}
+  import Absinthe.Resolution.Helpers, only: [on_load: 2]
+
+  alias Pastex.Content
 
   ## Queries
 
@@ -18,10 +20,20 @@ defmodule PastexWeb.ContentResolver do
     {:ok, file.body}
   end
 
-  def get_files(paste, _, _) do
-    files = paste |> Ecto.assoc(:files) |> Repo.all()
+  def get_files(paste, _, %{context: %{loader: loader}}) do
+    # less verbose version, uses ecto assoc
+    # |> Dataloader.load(:content, :files, paste)
 
-    {:ok, files}
+    loader
+    |> Dataloader.load(:content, {:many, Content.File}, paste_id: paste.id)
+    |> on_load(fn load ->
+      files = Dataloader.get(load, :content, {:many, Content.File}, paste_id: paste.id)
+      {:ok, files}
+    end)
+
+    # files = paste |> Ecto.assoc(:files) |> Repo.all()
+
+    # {:ok, files}
   end
 
   def list_pastes(_root_value, args, %{context: context}) do
