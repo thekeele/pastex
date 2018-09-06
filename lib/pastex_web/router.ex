@@ -12,6 +12,9 @@ defmodule PastexWeb.Router do
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: PastexWeb.Schema,
       interface: :playground,
-      socket: PastexWeb.UserSocket
+      socket: PastexWeb.UserSocket,
+      pipeline: {ApolloTracing.Pipeline, :plug},
+      analyze_complexity: true,
+      max_complexity: 1_000
   end
 end

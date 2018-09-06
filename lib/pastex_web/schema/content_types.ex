@@ -1,5 +1,6 @@
 defmodule PastexWeb.Schema.ContentTypes do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
 
   alias PastexWeb.ContentResolver
 
@@ -8,6 +9,8 @@ defmodule PastexWeb.Schema.ContentTypes do
     field :id, non_null(:id)
 
     field :author, :user do
+      complexity 100
+
       resolve fn
         %{author_id: nil}, _, _ -> {:ok, nil}
 
@@ -44,8 +47,14 @@ defmodule PastexWeb.Schema.ContentTypes do
     end
   end
 
+  connection(node_type: :paste)
+
   object :content_queries do
-    field :pastes, list_of(non_null(:paste)) do
+    connection field :pastes, node_type: :paste do
+        complexity fn args, child_complexity ->
+          trunc((1 + args[:first] * 0.1) * child_complexity)
+        end
+
       resolve &ContentResolver.list_pastes/3
     end
   end

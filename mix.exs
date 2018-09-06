@@ -44,7 +44,8 @@ defmodule Pastex.Mixfile do
       {:absinthe_relay, "~> 1.4"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      {:apollo_tracing, "~> 0.4.0"}
     ]
   end
 
