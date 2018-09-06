@@ -44,6 +44,19 @@ defmodule PastexWeb.Schema do
   #   end
   # end
 
+  def context(ctx) do
+    loader =
+      Dataloader.new()
+      |> Dataloader.add_source(:content, Pastex.Content.data(ctx))
+      |> Dataloader.add_source(:identity, Pastex.Identity.data(ctx))
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  def plugins() do
+    [Absinthe.Middleware.Dataloader | Absinthe.Plugin.defaults()]
+  end
+
   def middleware(middleware, _field, _) do
     tracing_middleware() ++ [PastexWeb.Middleware.Auth |  middleware]
   end

@@ -9,6 +9,14 @@ defmodule Pastex.Identity do
   alias Pastex.Identity.User
   alias Comeonin.Ecto.Password
 
+  def data(ctx) do
+    Dataloader.Ecto.new(Repo, query: &query/2, default_params: %{current_user: ctx[:current_user]})
+  end
+
+  def query(queryable, _) do
+    queryable
+  end
+
   def authorized?(%User{id: id}, :email, %User{id: id}) do
     true
   end
