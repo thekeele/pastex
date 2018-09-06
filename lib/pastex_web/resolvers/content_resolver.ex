@@ -24,14 +24,21 @@ defmodule PastexWeb.ContentResolver do
     {:ok, files}
   end
 
-  def list_pastes(_root_value, _, _) do
-    {:ok, Content.list_pastes()}
+  def list_pastes(_root_value, _, %{context: context}) do
+    {:ok, Content.list_pastes(context[:current_user])}
   end
 
   ## Mutations
 
-  def create_paste(_, %{input: paste_data}, _) do
-    IO.inspect(paste_data, label: "paste_data")
+  def create_paste(_, %{input: paste_data}, %{context: context}) do
+    paste_data =
+      case context do
+        %{current_user: %{id: id}} ->
+          Map.put(paste_data, :author_id, id)
+
+        _ ->
+          paste_data
+      end
 
     Content.create_paste(paste_data)
   end
