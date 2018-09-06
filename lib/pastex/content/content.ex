@@ -20,19 +20,17 @@ defmodule Pastex.Content do
   def list_pastes(current_user) do
     Paste
     |> scope_to_user(current_user)
-    |> where([p], p.visibility == "public")
     |> order_by(desc: :inserted_at)
     |> Repo.all()
   end
 
   defp scope_to_user(query, %{id: user_id}) do
     from paste in query,
-      where: paste.author_id == ^user_id #or paste.visibility == "public"
+      where: paste.author_id == ^user_id or paste.visibility == "public"
   end
 
   defp scope_to_user(query, _) do
-    # from paste in query, where: paste.visibility == "public"
-    query
+    from paste in query, where: paste.visibility == "public"
   end
 
   @doc """

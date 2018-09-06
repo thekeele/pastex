@@ -28,4 +28,25 @@ defmodule PastexWeb.Schema do
       end
     end
   end
+
+  def middleware(middleware, field, object) do
+    # middleware is called before each resolution
+    # IO.puts "------------"
+    # IO.inspect(object.identifier, label: :object)
+    # IO.inspect(field.identifier, label: :field)
+    # IO.puts "------------"
+    if Absinthe.Type.meta(object, :check_auth) do
+      [PastexWeb.Middleware.Auth |  middleware]
+    else
+      middleware
+    end
+  end
+
+  # def middleware(middleware, _field, %{identifier: :user}) do
+  #   [PastexWeb.Middleware.Auth |  middleware]
+  # end
+
+  # def middleware(middleware, _field, _object) do
+  #   middleware
+  # end
 end
