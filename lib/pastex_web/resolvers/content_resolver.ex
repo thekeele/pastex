@@ -4,6 +4,8 @@ defmodule PastexWeb.ContentResolver do
 
   alias Pastex.{Content, Repo}
 
+  ## Queries
+
   def get_excited_name(paste, _, _) do
     {:ok, String.upcase(paste.name)}
   end
@@ -24,5 +26,13 @@ defmodule PastexWeb.ContentResolver do
 
   def list_pastes(_root_value, _, _) do
     {:ok, Content.list_pastes()}
+  end
+
+  ## Mutations
+
+  def create_paste(_, %{input: paste_data}, _) do
+    IO.inspect(paste_data, label: "paste_data")
+
+    Content.create_paste(paste_data)
   end
 end
